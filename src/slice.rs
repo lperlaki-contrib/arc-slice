@@ -743,10 +743,16 @@ impl<T: Clone + Send + Sync + 'static, L: Layout> From<ArcSlice<T, L>> for Cow<'
     }
 }
 
-#[derive(Clone, Copy)]
 pub struct ArcSliceRef<'a, T: Send + Sync + 'static, L: Layout = Compact> {
     slice: &'a [T],
     arc_slice: &'a ArcSlice<T, L>,
+}
+
+impl<T: Send + Sync + 'static, L: Layout> Copy for ArcSliceRef<'_, T, L> {}
+impl<T: Send + Sync + 'static, L: Layout> Clone for ArcSliceRef<'_, T, L> {
+    fn clone(&self) -> Self {
+        *self
+    }
 }
 
 impl<T: Send + Sync + 'static, L: Layout> Deref for ArcSliceRef<'_, T, L> {
